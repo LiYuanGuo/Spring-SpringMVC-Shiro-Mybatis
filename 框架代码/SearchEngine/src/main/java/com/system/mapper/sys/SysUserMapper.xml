@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.system.dao.sourceManage.sys.SysUserMapper">
+  <resultMap id="BaseResultMap" type="com.system.bean.sys.SysUser">
+    <!--
+      WARNING - @mbg.generated
+    -->
+   
+    <id column="F_ID" jdbcType="VARCHAR" property="fId" />
+    <result column="F_ACCOUNT" jdbcType="VARCHAR" property="fAccount" />
+    <result column="F_REALNAME" jdbcType="VARCHAR" property="fRealname" />
+    <result column="F_NICKNAME" jdbcType="VARCHAR" property="fNickname" />
+    <result column="F_HEADICON" jdbcType="VARCHAR" property="fHeadicon" />
+    <result column="F_GENDER" jdbcType="DECIMAL" property="fGender" />
+    <result column="F_BIRTHDAY" jdbcType="DATE" property="fBirthday" />
+    <result column="F_MOBILEPHONE" jdbcType="VARCHAR" property="fMobilephone" />
+    <result column="F_EMAIL" jdbcType="VARCHAR" property="fEmail" />
+    <result column="F_WECHAT" jdbcType="VARCHAR" property="fWechat" />
+    <result column="F_MANAGERID" jdbcType="VARCHAR" property="fManagerid" />
+    <result column="F_SECURITYLEVEL" jdbcType="DECIMAL" property="fSecuritylevel" />
+    <result column="F_SIGNATURE" jdbcType="VARCHAR" property="fSignature" />
+    <result column="F_ORGANIZEID" jdbcType="VARCHAR" property="fOrganizeid" />
+    <result column="F_DEPARTMENTID" jdbcType="VARCHAR" property="fDepartmentid" />
+   
+    <result column="F_DUTYID" jdbcType="VARCHAR" property="fDutyid" />
+    <result column="F_JOBNUMBER" jdbcType="VARCHAR" property="fJobnumber" />
+    <result column="F_ISADMINISTRATOR" jdbcType="DECIMAL" property="fIsadministrator" />
+    <result column="F_SORTCODE" jdbcType="DECIMAL" property="fSortcode" />
+    <result column="F_DELETEMARK" jdbcType="DECIMAL" property="fDeletemark" />
+    <result column="F_ENABLEDMARK" jdbcType="DECIMAL" property="fEnabledmark" />
+    <result column="F_DESCRIPTION" jdbcType="VARCHAR" property="fDescription" />
+    <result column="F_CREATORTIME" jdbcType="DATE" property="fCreatortime" />
+    <result column="F_CREATORUSERID" jdbcType="VARCHAR" property="fCreatoruserid" />
+    <result column="F_LASTMODIFYTIME" jdbcType="DATE" property="fLastmodifytime" />
+    <result column="F_LASTMODIFYUSERID" jdbcType="VARCHAR" property="fLastmodifyuserid" />
+    <result column="F_DELETETIME" jdbcType="DATE" property="fDeletetime" />
+    <result column="F_DELETEUSERID" jdbcType="VARCHAR" property="fDeleteuserid" />
+    <result column="F_PASSWORD" jdbcType="VARCHAR" property="fPassword" />
+    
+    
+    <collection property="roles" resultMap="BaseResultRoles" />
+     <collection property="permissions" resultMap="BaseResultPermissions" />
+  </resultMap>
+  <!-- 角色 -->
+   <resultMap  id="BaseResultRoles" type="com.system.bean.sys.SysRole">
+      <result column="id"  property="fId"  jdbcType="VARCHAR"/>
+	 <result column="F_ORGANIZEID" jdbcType="VARCHAR" property="fOrganizeid" />
+    <result column="F_CATEGORY" jdbcType="DECIMAL" property="fCategory" />
+  
+    <result column="F_FULLNAME" jdbcType="VARCHAR" property="fFullname" />
+    <result column="F_TYPE" jdbcType="VARCHAR" property="fType" />
+    <result column="F_RESPONSIBILITY" jdbcType="VARCHAR" property="fResponsibility" />
+    
+    <result column="F_SORTCODE" jdbcType="DECIMAL" property="fSortcode" />
+    
+	  <result column="F_TEMPLATEID"  property="fTemplateid"  jdbcType="VARCHAR"/>
+  </resultMap>
+  <!-- 权限 -->
+   <resultMap  id="BaseResultPermissions" type="com.system.bean.sys.SysPermission">
+      
+	<result column="id" jdbcType="VARCHAR" property="fId" />
+	<result column="F_PARENTID" jdbcType="VARCHAR" property="fParentid" />
+    <result column="F_LAYERS" jdbcType="DECIMAL" property="fLayers" />
+   
+    <result column="F_FULLNAME" jdbcType="VARCHAR" property="fFullname" />
+    <result column="F_ICON" jdbcType="VARCHAR" property="fIcon" />
+    <result column="F_URLADDRESS" jdbcType="VARCHAR" property="fUrladdress" />
+    <result column="F_TARGET" jdbcType="VARCHAR" property="fTarget" />
+    <result column="F_ISMENU" jdbcType="DECIMAL" property="fIsmenu" />
+    <result column="F_ISEXPAND" jdbcType="DECIMAL" property="fIsexpand" />
+    <result column="F_ISPUBLIC" jdbcType="DECIMAL" property="fIspublic" />
+   
+    <result column="F_SORTCODE" jdbcType="DECIMAL" property="fSortcode" />
+	  
+  </resultMap>
+  
+  
+  
+  
+  <sql id="Base_Column_List" >
+    F_ID, F_ACCOUNT, F_REALNAME, F_NICKNAME, F_HEADICON, F_GENDER, F_BIRTHDAY, F_MOBILEPHONE, 
+    F_EMAIL, F_WECHAT, F_MANAGERID, F_SECURITYLEVEL, F_SIGNATURE, F_ORGANIZEID, F_DEPARTMENTID, 
+    F_ROLEID, F_DUTYID, F_JOBNUMBER, F_ISADMINISTRATOR, F_SORTCODE, F_DELETEMARK, F_ENABLEDMARK, 
+    F_DESCRIPTION, F_CREATORTIME, F_CREATORUSERID, F_LASTMODIFYTIME, F_LASTMODIFYUSERID, 
+    F_DELETETIME, F_DELETEUSERID, F_PASSWORD
+  </sql>
+  
+  <select id="selectRoleByName" parameterType="java.lang.String" resultMap="BaseResultMap"> 
+  		select u.*,r.F_FULLNAME,r.F_ID as id,r.F_TEMPLATEID,r.F_ORGANIZEID,r.F_CATEGORY,r.F_TYPE,r.F_RESPONSIBILITY,r.F_SORTCODE
+  		from SYS_USER u
+  		LEFT JOIN SYS_USERROLE ur ON ur.F_USERID = u.F_ID
+  		LEFT JOIN SYS_ROLE r ON r.F_ID = ur.F_ROLEID
+  		WHERE u.F_ACCOUNT =( #{f_account,jdbcType=VARCHAR} )
+  		AND u.F_DELETEMARK=0 AND u.F_ENABLEDMARK=1
+  		AND r.F_DELETEMARK=0 AND r.F_ENABLEDMARK=1
+  		AND ur.F_DELETEMARK=0 
+  </select>
+  
+ <select id="selectPermissionByPermission" parameterType="java.lang.String" resultMap="BaseResultMap">
+ 		select DISTINCT u.*,p.F_ID as id,p.F_PARENTID,p.F_LAYERS,p.F_FULLNAME,p.F_ICON,p.F_URLADDRESS,p.F_TARGET,p.F_ISMENU,
+ 		p.F_ISEXPAND,p.F_ISPUBLIC,p.F_SORTCODE
+ 		from SYS_USER u
+ 		LEFT JOIN SYS_USERROLE ur ON ur.F_USERID = u.F_ID
+  		LEFT JOIN SYS_ROLEPERMISSION rp ON ur.F_ROLEID=rp.F_ROLEID
+  		LEFT JOIN SYS_PERMISSION p ON rp.F_PERMISSIONID = p.F_ID
+  		WHERE u.F_ACCOUNT =( #{f_account,jdbcType=VARCHAR} )
+  		  		AND u.F_DELETEMARK=0 AND u.F_ENABLEDMARK=1
+  		  		AND ur.F_DELETEMARK=0 
+  		  		AND p.F_DELETEMARK=0 AND p.F_ENABLEDMARK=1
+  		  		AND rp.F_DELETEMARK=0 
+ </select>
+  
+   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+   <include refid="Base_Column_List" />
+    from SYS_USER WHERE F_DeleteMark  = 0  AND F_ACCOUNT= ( #{f_account,jdbcType=VARCHAR} )
+  </select>
+  
+  
+  
+</mapper>

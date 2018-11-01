@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 配置数据源 -->
+	<bean id="dataSourceManage" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${dataSourceManage.url}" />
+		<property name="username" value="${dataSourceManage.username}" />
+		<property name="password" value="${dataSourceManage.password}" />
+		<property name="connectionProperties" value="${dataSourceManage.driver}"></property>
+		<property name="driverClassName" value="${dataSourceManage.driver}"></property>
+
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="50" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="1000" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<!-- 设置自动回收超时连接  --> 
+		<property name="removeAbandoned"  value="true"/>
+		
+		 <!-- 自动回收超时时间(以秒数为单位)  -->
+		<property name="removeAbandonedTimeout" value="10"/> 
+
+	</bean>
+	
+	<!-- <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
+        <property name="driverClass" value="${jdbc.driver}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean> -->
+    
+	<!--通用mapper配置-->
+	<bean id="mybatisConfigManage" class="tk.mybatis.mapper.session.Configuration">
+	    <property name="mapperProperties">
+	        <value>
+	            notEmpty=true
+	        </value>
+	    </property>
+	</bean>
+
+	<!-- define the SqlSessionFactory -->
+	<bean id="sqlSessionFactoryManage" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceManage" />
+		<property name="configuration" ref="mybatisConfigManage"/><!-- 通用 Mapper注入 -->
+		<property name="typeAliasesPackage" value="com.system.bean" />
+		<!-- <property name="configLocation" value="classpath:mybatis.cfg.xml" /> -->
+		<property name="mapperLocations" value="classpath*:com/system/mapper/**/*.xml" />
+		<property name="plugins">
+	        <array>
+	            <bean class="com.github.pagehelper.PageInterceptor">
+	                <property name="properties">
+	                    <value>
+	                        helperDialect=oracle
+	                        reasonable=true
+	                        supportMethodsArguments=true
+	                        params=count=countSql
+	                        autoRuntimeDialect=true
+	                    </value>
+	                </property>
+	            </bean>
+        	</array>
+    	</property>
+	</bean>
+
+	<!--  -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryManage"/>
+		<property name="basePackage" value="com.system.dao.sourceManage" /><!-- 不能取名 .dao 会与其他冲突 -->
+	</bean>
+
+	
+    <!-- 配置事务 -->    
+	<bean id="txManagerManage" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		    <property name="dataSource" ref="dataSourceManage"/>
+	</bean>
+		
+	  <!--配置哪些数据源需要开启事务-->
+	<tx:advice id="txAdviceManage" transaction-manager="txManagerManage">
+        <tx:attributes>
+	            <tx:method name="batch*"  propagation="REQUIRED"  isolation="DEFAULT" rollback-for="Exception"/>
+	            <tx:method name="save*"   propagation="REQUIRED"  isolation="DEFAULT" rollback-for="Exception"/>
+	            <tx:method name="insert*"   propagation="REQUIRED"  isolation="DEFAULT" rollback-for="Exception"/>
+	            <tx:method name="import*" propagation="REQUIRED"  isolation="DEFAULT" rollback-for="Exception"/>
+	            <tx:method name="add*"    propagation="REQUIRED"  isolation="DEFAULT" rollback-for="Exception"/>
+	            <tx:method name="remove*" propagation="REQUIRED"  isolation="DEFAULT" rollback-for="Exception"/>
+	            <tx:method name="delete*" propagation="REQUIRED"  isolation="DEFAULT" rollback-for="Exception"/>
+	            <tx:method name="update*" propagation="REQUIRED"  isolation="DEFAULT" rollback-for="Exception"/>
+              	<tx:method name="find*"  read-only="true" />
+              	<tx:method name="get*"  read-only="true" />
+              	<tx:method name="select*"  read-only="true" />
+              	<tx:method name="login*"  read-only="true" />
+       </tx:attributes>
+    </tx:advice>
+
+    <!-- 配置哪些类的方法需要进行事务管理 -->
+    <aop:config>
+       <!-- <aop:pointcut id="allManagerMethod" expression="execution(* com.system.service.*.*.*(..))"/> -->
+       <aop:pointcut id="allManagerMethodManage" expression="execution(* com.system.service.*.*.*(..))"/>
+       <aop:advisor advice-ref="txAdviceManage" pointcut-ref="allManagerMethodManage"/>
+    </aop:config>
+    
+</beans>

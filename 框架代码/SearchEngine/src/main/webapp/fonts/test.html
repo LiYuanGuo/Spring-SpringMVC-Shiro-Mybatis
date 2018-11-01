@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script>
+	function gosubmit(){
+		alert("start")
+		
+		var formdata=new FormData();
+		
+		
+        //formdata.append('name', 'uploadImage');
+        formdata.append('uploadImage',document.getElementById("uploadImage").files[0]);
+        
+       // formdata.append('recid',str);
+        alert("doing")
+        $.ajax({
+            url:'localhost:8080/ZzManage/weibo/sendWeiBoWithPic',
+            type:'post',
+            
+           data:formdata,
+           async:false,
+           processData:false,
+           contentType:false,
+            success:function(info){    
+               alert("666")
+            }
+        });
+	}
+
+
+
+
+</script>
+</head>
+<body>
+ <form  method="post" id="imgform" enctype="multipart/form-data" >
+          <a href="javascript:;" class="imgstyle">请选择文件
+            <input type="file" name="uploadImage" id="uploadImage">
+          </a>
+          <input type="button" onclick="gosubmit()" id="imgbtn" value="上传" />
+      </form>
+</body>
+</html>

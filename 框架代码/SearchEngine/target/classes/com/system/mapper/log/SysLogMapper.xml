@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.system.dao.sourceManage.log.SysLogMapper">
+  <resultMap id="BaseResultMap" type="com.system.bean.log.SysLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="F_ID" jdbcType="VARCHAR" property="fId" />
+    <result column="F_USERID" jdbcType="VARCHAR" property="fUserid" />
+    <result column="F_REALNAME" jdbcType="VARCHAR" property="fRealname" />
+    <result column="F_TYPE" jdbcType="VARCHAR" property="fType" />
+    <result column="F_IPADDRESS" jdbcType="VARCHAR" property="fIpaddress" />
+    <result column="F_IPADDRESSNAME" jdbcType="VARCHAR" property="fIpaddressname" />
+    <result column="F_MODULEID" jdbcType="VARCHAR" property="fModuleid" />
+    <result column="F_MODULENAME" jdbcType="VARCHAR" property="fModulename" />
+    <result column="F_RESULT" jdbcType="DECIMAL" property="fResult" />
+    <result column="F_DESCRIPTION" jdbcType="VARCHAR" property="fDescription" />
+    <result column="F_CREATORTIME" jdbcType="DATE" property="fCreatortime" />
+    <result column="F_CREATORUSERID" jdbcType="VARCHAR" property="fCreatoruserid" />
+    <result column="F_KEY" jdbcType="VARCHAR" property="fKey" />
+  </resultMap>
+</mapper>

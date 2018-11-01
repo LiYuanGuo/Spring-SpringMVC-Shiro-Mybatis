@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<!-- 引入配置文件 -->
+	<properties resource="database.properties"/>
+	<context id="context1" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+		<property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        
+		<plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+			<property name="mappers" value="com.system.util.generate.MyMapper" />
+			<property name="caseSensitive" value="true" />
+		</plugin>
+		
+		<!-- 注释 -->
+	    <commentGenerator>
+	        <property name="suppressAllComments" value="false"/><!-- 是否取消注释  -->  
+	        <property name="suppressDate" value="false" /> <!-- 是否生成注释代时间戳 -->  
+	    </commentGenerator>
+
+		<!-- jdbc链接 org.gjt.mm.mysql.Driver/com.mysql.jdbc.Driver -->
+		<!-- source1 -->
+		<!-- <jdbcConnection driverClass="${dataSource.driver}"
+			connectionURL="${dataSource.url}" userId="${dataSource.username}"
+			password="${dataSource.password}" /> -->
+		<!-- source2 -->
+		<jdbcConnection driverClass="${dataSourceManage.driver}"
+			connectionURL="${dataSourceManage.url}" userId="${dataSourceManage.username}"
+			password="${dataSourceManage.password}" />
+		<!-- 生成实体 -->
+		<javaModelGenerator targetPackage="com.system.bean.sys"
+			targetProject="src/main/java">
+		</javaModelGenerator>
+
+		<!-- 生成mapxml文件 -->
+		<sqlMapGenerator targetPackage="com.system.mapper.sys"
+			targetProject="src/main/java">
+		</sqlMapGenerator>
+		<!-- 生成mapxml对应client，也就是接口dao -->
+		<javaClientGenerator targetPackage="com.system.dao.sourceManage.sys"
+			targetProject="src/main/java" type="XMLMAPPER">
+		</javaClientGenerator>
+		<!-- 配置表信息 -->
+		<table tableName="SYS_USERROLE" ></table>
+		<!-- <table tableName="SYS_ROLESOURCE" ></table>
+		<table tableName="SYS_TEMPLATE" ></table>
+		<table tableName="SYS_TEMPLATEDETAIL" ></table>
+		<table tableName="SYS_TEMPLATEPERSSION" ></table>
+		<table tableName="SYS_PERMISSION" ></table> -->
+		
+		
+	</context>
+</generatorConfiguration>
